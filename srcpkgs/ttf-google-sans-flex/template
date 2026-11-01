@@ -1,0 +1,27 @@
+# Template file for 'ttf-google-sans-flex'
+
+# ------------------------------
+
+pkgname=ttf-google-sans-flex
+version=1.0.0
+revision=1
+short_desc="Google Sans Flex"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="OFL-1.1"
+homepage="https://fonts.google.com/specimen/Google+Sans+Flex"
+
+# ------------------------------
+
+hostmakedepends="curl"
+depends="font-util"
+font_dirs="/usr/share/fonts/TTF/GoogleSans-Flex"
+provides="font:sans-serif-0_1"
+
+# ------------------------------
+
+do_install() {
+	curl -L "https://github.com/google/fonts/raw/refs/heads/main/ofl/googlesansflex/OFL.txt" -O --fail
+	curl -L "https://github.com/google/fonts/raw/refs/heads/main/ofl/googlesansflex/GoogleSansFlex%5BROND,opsz,slnt,wdth,wght%5D.ttf" -o "GoogleSansFlex-VF.ttf" --fail
+	vlicense OFL.txt
+	vinstall "GoogleSansFlex-VF.ttf" 644 ${font_dirs}
+}

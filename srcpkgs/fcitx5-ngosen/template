@@ -1,0 +1,31 @@
+# Template file for 'fcitx5-ngosen'
+
+# ------------------------------
+
+pkgname=fcitx5-ngosen
+version=1.7.5
+revision=1
+short_desc="Ngó Sen, a Vietnamese input method for fcitx5"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/ngosen/ngosen"
+changelog="https://github.com/ngosen/ngosen/releases"
+
+# ------------------------------
+
+build_style=cmake
+configure_args="-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib"
+hostmakedepends="cargo extra-cmake-modules gettext librsvg-utils"
+makedepends="libfcitx5-devel"
+depends="python3-QtPy python3-pyqt6-widgets python3-pyqt6-gui python3-pyqt6-dbus python3-gobject python3-cairo gtk+3 gtk4"
+
+# ------------------------------
+
+distfiles="https://github.com/ngosen/ngosen/archive/refs/tags/ngosen-${version}-${revision}.tar.gz"
+checksum="0a363dc9cde26450141bf19fc50a21df8d13dcf661c27582c6a50c255e40d726"
+
+# ------------------------------
+
+post_install() {
+	vlicense LICENSE
+}

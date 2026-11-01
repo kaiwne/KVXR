@@ -1,0 +1,22 @@
+# Signing keys & secrets
+*.pem
+*.key
+*.plist
+
+# Built packages & signatures
+*.xbps
+*.sig
+*.sig2
+*-repodata
+
+# xbps-src / build directories
+hostdir/
+masterdir*/
+void-packages/
+release-assets/
+/tmp/
+
+# Local specification, planning & test suite
+SPEC.md
+tasks/
+tests/

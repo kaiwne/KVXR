@@ -1,0 +1,66 @@
+name: 🔄 Auto Update Packages
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: '📦 Specific package(s) to check/update (space-separated, default: all)'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: 🔄 Update Package Templates
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Run universal package updater
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_PKGS: ${{ inputs.packages }}
+        run: |
+          set -euo pipefail
+          if [ -n "${INPUT_PKGS:-}" ]; then
+            # shellcheck disable=SC2086
+            bash scripts/update.sh ${INPUT_PKGS//,/ }
+          else
+            bash scripts/update.sh
+          fi
+
+      - name: 📝 Commit & push template updates
+        id: commit_changes
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain srcpkgs/)" ]; then
+            UPDATED_LIST=$(git status --porcelain srcpkgs/ | awk '{print $2}' | cut -d'/' -f2 | sort -u | paste -sd ', ' -)
+            echo "✨ Detected updates in: ${UPDATED_LIST}"
+            git add srcpkgs/
+            git commit -m "chore(srcpkgs): auto-update ${UPDATED_LIST}"
+            git push origin main
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "☕ All package templates are already up to date."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 🚀 Trigger Build & Release workflow
+        if: steps.commit_changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run build.yml

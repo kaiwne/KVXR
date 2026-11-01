@@ -1,0 +1,48 @@
+# Template file for 'fcitx5-lotus'
+
+# ------------------------------
+
+pkgname=fcitx5-lotus
+version=6.0.4
+revision=1
+short_desc="Fcitx5 Lotus - Vietnamese IME"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="GPL-3.0-or-later AND LGPL-2.1-or-later AND MIT AND GPL-2.0-or-later"
+homepage="https://lotusinputmethod.github.io/"
+changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
+
+# ------------------------------
+
+build_style=cmake
+configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/etc/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
+hostmakedepends="extra-cmake-modules gettext pkgconf"
+makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel libevdev-devel libnotify-devel"
+depends="fcitx5 acl-progs"
+system_accounts="_uinput_proxy"
+_uinput_proxy_groups="input"
+_uinput_proxy_descr="Lotus UInput Proxy User"
+
+# ------------------------------
+
+distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz"
+checksum="01aab5d583d801e577c8985aa00f1bb3a8ca346a6769bd0f439ef675d2d6b89c"
+
+# ------------------------------
+
+post_install() {
+	vlicense lotus/LICENSE.bamboo-core
+	vdoc ${FILESDIR}/README.voidlinux
+}
+
+fcitx5-lotus-settings_package() {
+	short_desc+=" - Settings"
+	depends="${sourcepkg}>=${version}_${revision} python3 python3-QtPy
+ python3-pyqt6 python3-dbus python3-pyqt6-widgets python3-pyqt6-gui"
+	pycompile_dirs="usr/share/${sourcepkg}/settings-gui"
+	python_version=3
+	pkg_install() {
+		vmove usr/bin/fcitx5-lotus-settings
+		vmove usr/share/fcitx5-lotus/settings-gui
+		vmove usr/share/applications/org.fcitx.Fcitx5.Addon.Lotus.Settings.desktop
+	}
+}

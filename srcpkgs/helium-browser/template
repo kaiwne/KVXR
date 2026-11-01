@@ -1,0 +1,48 @@
+# Template file for 'helium-browser'
+
+# ------------------------------
+
+pkgname=helium-browser
+version=0.20.3.1
+revision=1
+archs="x86_64"
+short_desc="Fast, private and secure web browser with ad blocker"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="GPL-3.0-only AND BSD-3-Clause"
+homepage="https://helium.computer"
+changelog="https://github.com/imputnet/helium-linux/releases"
+
+# ------------------------------
+
+makedepends="tar xz curl"
+
+# ------------------------------
+
+distfiles="https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64_linux.tar.xz"
+checksum="3759ea4e95bf4ef4a0a6477e3d73576b0f03906f2e80357275bfc6cacafb5fac"
+
+# ------------------------------
+
+do_extract() {
+	tar -xvf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/helium-${version}-x86_64_linux.tar.xz -C ${wrksrc} --strip-components=1
+}
+
+do_install() {
+	install -dm755 "${DESTDIR}/opt/${pkgname}" "${DESTDIR}/usr/bin" "${DESTDIR}/usr/share/applications" "${DESTDIR}/usr/share/icons/hicolor" "${DESTDIR}/usr/share/pixmaps"
+
+	vinstall helium.desktop 644 usr/share/applications/
+	vcopy * opt/${pkgname}
+	chmod 0755 "${DESTDIR}/opt/${pkgname}"
+	ln -sf "/opt/${pkgname}/helium" "${DESTDIR}/usr/bin/helium"
+
+	install -d ${DESTDIR}/usr/share/icons/hicolor/256x256/apps
+	vinstall product_logo_256.png 644 usr/share/icons/hicolor/256x256/apps helium.png
+	vinstall product_logo_256.png 644 usr/share/pixmaps helium.png
+}
+
+post_install() {
+	curl --fail -sOL https://github.com/imputnet/helium-linux/raw/refs/heads/main/LICENSE
+	curl --fail -sOL https://github.com/imputnet/helium-linux/raw/refs/heads/main/LICENSE.ungoogled_chromium
+	vlicense LICENSE
+	vlicense LICENSE.ungoogled_chromium
+}

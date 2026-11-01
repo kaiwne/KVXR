@@ -1,0 +1,138 @@
+# Template file for 'cordial'
+
+# ------------------------------
+
+_dynarmic_version=a46601580d5512d324104f985b5f0209dc980ddc
+_dynarmic_biscuit_version=06d2ba12ed5f8b7397f9be79b2beb200a83b6bb7
+_dynarmic_catch2_version=a1a991fee5f217b40035cb2f8ebc83864d66408d
+_dynarmic_fmt_version=09a606d17a2c5c2a7a295f873f67d626264d2181
+_dynarmic_mcl_version=5fc4beaf331037649b10625736b41365defb4f50
+_dynarmic_oaknut_version=94c726ce0338b054eb8cb5ea91de8fe6c19f4392
+_dynarmic_robin_map_version=91362aab8f2c63ef90bf7c21fb2c3283ded5ae48
+_dynarmic_xbyak_version=df112862583c2d327c1d9782fd28f53aa675f11d
+_dynarmic_zycore_c_version=c1fa01cea7fd457dcec468104d477c8b0ca675f7
+_dynarmic_zydis_version=3bca602422216770f8de82267892d929bcf20fe5
+
+_libjnivm_version=f24b98c198fcc5c59a68d1efadd3f5791eb01c2e
+
+_mcpelauncher_linker_version=1ac3ea6c1cf4f73a84d73f0bff510fba94a7d0f2
+_mcpell_bionic_version=f12541ba597c6ae44501577f3bff8faf62deddd1
+_mcpell_core_version=0235714fbf5593df145e8f991f82c5926c2df2df
+
+# ------------------------------
+
+pkgname=cordial
+version=0.34.0
+revision=1
+short_desc="Runs Roblox's official Android build, run natively on Linux"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/luohoa97/cordial"
+changelog="https://github.com/luohoa97/cordial/releases"
+
+# ------------------------------
+
+build_style=cargo
+hostmakedepends="pkgconf clang cmake"
+makedepends="gtk4-devel libadwaita-devel boost-devel pipewire-devel"
+
+# ------------------------------
+
+distfiles="https://github.com/luohoa97/cordial/archive/refs/tags/v${version}.tar.gz
+           https://github.com/azahar-emu/dynarmic/archive/${_dynarmic_version}.tar.gz
+           https://github.com/lioncash/biscuit/archive/${_dynarmic_biscuit_version}.tar.gz
+           https://github.com/catchorg/Catch2/archive/${_dynarmic_catch2_version}.tar.gz
+           https://github.com/fmtlib/fmt/archive/${_dynarmic_fmt_version}.tar.gz
+           https://github.com/azahar-emu/mcl/archive/${_dynarmic_mcl_version}.tar.gz
+           https://github.com/merryhime/oaknut/archive/${_dynarmic_oaknut_version}.tar.gz
+           https://github.com/Tessil/robin-map/archive/${_dynarmic_robin_map_version}.tar.gz
+           https://github.com/herumi/xbyak/archive/${_dynarmic_xbyak_version}.tar.gz
+           https://github.com/zyantific/zycore-c/archive/${_dynarmic_zycore_c_version}.tar.gz
+           https://github.com/zyantific/zydis/archive/${_dynarmic_zydis_version}.tar.gz
+           https://github.com/ChristopherHX/libjnivm/archive/${_libjnivm_version}.tar.gz
+           https://github.com/minecraft-linux/mcpelauncher-linker/archive/${_mcpelauncher_linker_version}.tar.gz
+           https://github.com/minecraft-linux/android_bionic/archive/${_mcpell_bionic_version}.tar.gz
+           https://github.com/minecraft-linux/android_core/archive/${_mcpell_core_version}.tar.gz"
+
+checksum="e3332a4bb3ac7289e4669eca312f92515f179aae69fbe7d988b83fd069c026d1
+          73c7f7fbf573c542767a4146297e4954369485077ae3880395445af787de0915
+          5f823ab7c6f9cc7afb1475bea89a0416d10c5d6520b4b08f3dce6721ad236f45
+          199b3c2c7140f87a746fb8a193c7885bc7a953b5b89fe6c41cb061dafa061583
+          7cfac3eae9edeba0e42d81ca6e17d095e30657e5aee5f995c39c8aa2aaeef0d5
+          36a2200e7940838112c9967388685a5178c2e9a110233193b914f54b2e2f51fd
+          c404db82002f9a851a412b3d55ac9be8a42a2e319fd2fc8a73e63e6ef5d4f97b
+          c313acf3eb2d45984f33a5230e6280e7a67114944317d46260baa428dbc5f810
+          1a4a9bed8eef6ad16a74374c2314dff319ca65d0ed1b096e36bc0779370349e1
+          a6560819d40c8d47202a7a453d5e149c2faac7d1dfdf16be0c2a90128a8b77df
+          9ff1bb3a62b9c90f6627e020e833ba6ecdbdc0e7a939a100b989a7ce530c1a5a
+          9998e7c7261bc78c4da33951bec283125a2d2c524975e0a56adf288ef675f95a
+          b793d36926a28f925af15fef1e8ea19bb02619080f0e9e9d0cd4acc8128bff62
+          5d041cc651457ed5b781194c0a84fc9120d33500e6d29725b2e2701b2f5e6782
+          ad43690a4649e63dc27a7b7b03a434a7690c896ae1e6651a29717864c5fda1ea"
+
+skip_extraction="${_dynarmic_version}.tar.gz
+                 ${_dynarmic_biscuit_version}.tar.gz
+                 ${_dynarmic_catch2_version}.tar.gz
+                 ${_dynarmic_fmt_version}.tar.gz
+                 ${_dynarmic_mcl_version}.tar.gz
+                 ${_dynarmic_oaknut_version}.tar.gz
+                 ${_dynarmic_robin_map_version}.tar.gz
+                 ${_dynarmic_xbyak_version}.tar.gz
+                 ${_dynarmic_zycore_c_version}.tar.gz
+                 ${_dynarmic_zydis_version}.tar.gz
+                 ${_libjnivm_version}.tar.gz
+                 ${_mcpelauncher_linker_version}.tar.gz
+                 ${_mcpell_bionic_version}.tar.gz
+                 ${_mcpell_core_version}.tar.gz"
+
+# ------------------------------
+
+post_extract() {
+	vsrcextract -C "third_party/dynarmic" "${_dynarmic_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/biscuit" "${_dynarmic_biscuit_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/catch" "${_dynarmic_catch2_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/fmt" "${_dynarmic_fmt_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/mcl" "${_dynarmic_mcl_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/oaknut" "${_dynarmic_oaknut_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/robin-map" "${_dynarmic_robin_map_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/xbyak" "${_dynarmic_xbyak_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/zycore" "${_dynarmic_zycore_c_version}.tar.gz"
+	vsrcextract -C "third_party/dynarmic/externals/zydis" "${_dynarmic_zydis_version}.tar.gz"
+	vsrcextract -C "third_party/libjnivm" "${_libjnivm_version}.tar.gz"
+	vsrcextract -C "third_party/mcpelauncher-linker" "${_mcpelauncher_linker_version}.tar.gz"
+	vsrcextract -C "third_party/mcpelauncher-linker/bionic" "${_mcpell_bionic_version}.tar.gz"
+	vsrcextract -C "third_party/mcpelauncher-linker/core" "${_mcpell_core_version}.tar.gz"
+}
+
+do_build() {
+	export CC=clang CXX=clang++
+	cargo build --release
+}
+
+do_install() {
+	vbin "target/release/cordial-shell"
+	vbin "target/release/cordial-run"
+	ln -sf "cordial-shell" "${DESTDIR}/usr/bin/cordial"
+
+	vmkdir "usr/share/cordial/plugins"
+	vmkdir "usr/share/applications"
+	vmkdir "usr/share/icons/hicolor/scalable/apps"
+	vcopy "plugins/*" "usr/share/cordial/plugins/"
+	vcopy "packaging/io.github.luohoa97.Cordial.desktop" "usr/share/applications"
+	vcopy "packaging/io.github.luohoa97.Cordial.metainfo.xml" "usr/share/applications"
+	vcopy "packaging/icons/hicolor/scalable/apps/*" "usr/share/icons/hicolor/scalable/apps/"
+	vlicense LICENSE
+	vlicense NOTICE
+	vlicense THIRD-PARTY-NOTICES.md
+	vlicense third_party/dynarmic/LICENSE.txt dynarmic-0BSD.txt
+	vlicense third_party/dynarmic/externals/fmt/LICENSE fmt-MIT.txt
+	vlicense third_party/dynarmic/externals/mcl/LICENSE mcl-MIT.txt
+	vlicense third_party/dynarmic/externals/xbyak/COPYRIGHT xbyak-BSD-3-Clause.txt
+	vlicense third_party/dynarmic/externals/zydis/LICENSE zydis-MIT.txt
+	vlicense third_party/dynarmic/externals/zycore/LICENSE zycore-MIT.txt
+	vlicense third_party/libbadcpu/LICENSE.upstream libbadcpu-MIT.txt
+	vlicense third_party/libjnivm/LICENSE libjnivm-MIT.txt
+	vlicense third_party/mcpelauncher-linker/LICENSE mcpelauncher-linker-MIT.txt
+	vlicense third_party/mcpelauncher-linker/core/NOTICE aosp-NOTICE.txt
+	vlicense third_party/mocktail-webview/LICENSE mocktail-webview-Apache-2.0.tx
+}

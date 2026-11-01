@@ -1,0 +1,327 @@
+name: 🏗️ Build & Release Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_build_all:
+        description: '⚡ Rebuild all packages (bypass change detection)'
+        type: boolean
+        required: false
+        default: false
+      packages:
+        description: '📦 Specific package(s) to build (space-separated, optional)'
+        type: string
+        required: false
+        default: ''
+  push:
+    branches:
+      - main
+    paths:
+      - 'srcpkgs/**'
+      - 'common/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # JOB 1: Detect Changed or Unbuilt Packages
+  # ============================================================================
+  detect:
+    name: 🔎 Detect Package Changes
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.set-pkgs.outputs.packages }}
+      has_changes: ${{ steps.set-pkgs.outputs.has_changes }}
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔎 Determine packages to build
+        id: set-pkgs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_BUILD: ${{ inputs.force_build_all }}
+          INPUT_PKGS: ${{ inputs.packages }}
+          DEFAULT_RELEASE_TAG: "x86_64-glibc"
+        run: |
+          set -euo pipefail
+          CHANGED_PKGS=()
+
+          # 1. Explicit package list from manual dispatch
+          if [ -n "${INPUT_PKGS:-}" ]; then
+            echo "📦 Building explicitly requested packages: ${INPUT_PKGS}"
+            for pkg in ${INPUT_PKGS//,/ }; do
+              if [ -f "srcpkgs/${pkg}/template" ]; then
+                CHANGED_PKGS+=("$pkg")
+              else
+                echo "⚠️ Warning: srcpkgs/${pkg}/template not found, skipping."
+              fi
+            done
+
+          # 2. Force rebuild all packages
+          elif [ "${FORCE_BUILD:-false}" = "true" ]; then
+            echo "⚡ Force build enabled! Scanning all packages in srcpkgs/..."
+            for dir in srcpkgs/*; do
+              if [ -d "$dir" ] && [ ! -L "$dir" ] && [ -f "$dir/template" ]; then
+                CHANGED_PKGS+=("$(basename "$dir")")
+              fi
+            done
+
+          # 3. Push event or normal manual dispatch: check git diff + missing release assets
+          else
+            if [ "${{ github.event_name }}" = "push" ]; then
+              BEFORE_SHA="${{ github.event.before }}"
+              if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+                BEFORE_SHA="HEAD~1"
+              fi
+              if git rev-parse --verify "$BEFORE_SHA" >/dev/null 2>&1; then
+                git_diff_pkgs=$(git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep '^srcpkgs/' | cut -d'/' -f2 | sort -u || true)
+                for pkg in $git_diff_pkgs; do
+                  if [ -d "srcpkgs/$pkg" ] && [ ! -L "srcpkgs/$pkg" ] && [ -f "srcpkgs/$pkg/template" ]; then
+                    CHANGED_PKGS+=("$pkg")
+                  fi
+                done
+              fi
+            fi
+
+            # Also include any package whose current version_revision is not yet published in the release
+            RELEASE_ASSETS=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/tags/${DEFAULT_RELEASE_TAG}" 2>/dev/null \
+              | jq -r '.assets[].name // empty' 2>/dev/null || true)
+
+            for dir in srcpkgs/*; do
+              if [ -d "$dir" ] && [ ! -L "$dir" ] && [ -f "$dir/template" ]; then
+                pkg=$(basename "$dir")
+                version=$(grep -E '^[[:space:]]*version=' "$dir/template" | head -n1 | cut -d'=' -f2 | tr -d "\"' ")
+                revision=$(grep -E '^[[:space:]]*revision=' "$dir/template" | head -n1 | cut -d'=' -f2 | tr -d "\"' ")
+                expected_prefix="${pkg}-${version}_${revision}."
+                if ! printf '%s\n' "$RELEASE_ASSETS" | grep -qF "$expected_prefix"; then
+                  CHANGED_PKGS+=("$pkg")
+                fi
+              fi
+            done
+          fi
+
+          # Deduplicate package list
+          if [ ${#CHANGED_PKGS[@]} -eq 0 ]; then
+            echo "☕ No packages need building."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "packages=[]" >> "$GITHUB_OUTPUT"
+          else
+            mapfile -t UNIQUE_PKGS < <(printf '%s\n' "${CHANGED_PKGS[@]}" | sort -u)
+            JSON_MATRIX=$(jq -nc '$ARGS.positional' --args "${UNIQUE_PKGS[@]}")
+            echo "✨ Packages queued for build: $JSON_MATRIX"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "packages=$JSON_MATRIX" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================================
+  # JOB 2: Build & Sign Packages
+  # ============================================================================
+  build-and-sign:
+    name: 🏗️ Build & Sign (${{ matrix.arch }}-${{ matrix.libc }})
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            libc: glibc
+            target_arch: x86_64
+            platform: linux/amd64
+
+    container:
+      image: ghcr.io/void-linux/void-${{ matrix.libc }}-full:latest
+      options: --platform ${{ matrix.platform }} --privileged
+      volumes:
+        - /dev:/dev
+
+    steps:
+      - name: ⚙️ Prepare Void container environment
+        run: |
+          mkdir -p /etc/xbps.d && cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
+          env -u XBPS_TARGET_ARCH xbps-install -Syu -y xbps
+          env -u XBPS_TARGET_ARCH xbps-install -yu
+          env -u XBPS_TARGET_ARCH xbps-install -y sudo bash curl grep jq zip unzip git github-cli xtools coreutils openssl
+          useradd -G xbuilder -M builder -s "$(command -v bash)" || true
+
+      - name: 📥 Checkout upstream void-packages
+        uses: actions/checkout@v4
+        with:
+          repository: void-linux/void-packages
+          ref: master
+          depth: 1
+          path: void-packages
+
+      - name: 📥 Checkout KVXR repository
+        uses: actions/checkout@v4
+        with:
+          path: kvxr
+
+      - name: 🔀 Overlay KVXR templates & fetch existing release binaries
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: "${{ matrix.arch }}-${{ matrix.libc }}"
+          REPO_SLUG: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Patch sourcepkg.sh environment loop for container compatibility
+          sed -i 's@for var in $(awk .*;@for var in $(printenv | cut -d'"'"'='"'"' -f1);@' \
+            void-packages/common/environment/setup/sourcepkg.sh
+
+          # Copy KVXR package templates cleanly into void-packages/srcpkgs/
+          cp -a kvxr/srcpkgs/. void-packages/srcpkgs/
+
+          # Append custom shlibs mappings (if any) without overwriting upstream common/shlibs
+          if [ -f kvxr/common/shlibs ]; then
+            grep -vE '^[[:space:]]*(#|$)' kvxr/common/shlibs >> void-packages/common/shlibs || true
+          fi
+
+          # Download existing binaries from GitHub Release to preserve unchanged packages
+          mkdir -p void-packages/hostdir/binpkgs
+          gh release download "$RELEASE_TAG" \
+            --pattern "*.xbps" \
+            --dir void-packages/hostdir/binpkgs \
+            --repo "$REPO_SLUG" || true
+          rm -f void-packages/hostdir/binpkgs/*.sig2
+
+      - name: 🔨 Build target packages
+        working-directory: void-packages
+        env:
+          TARGET_ARCH: ${{ matrix.target_arch }}
+          TARGET_PKGS_JSON: ${{ needs.detect.outputs.packages }}
+        run: |
+          set -euo pipefail
+          chown -R builder:builder .
+
+          mapfile -t RAW_PKGS < <(printf '%s' "$TARGET_PKGS_JSON" | jq -r '.[]')
+          if [ ${#RAW_PKGS[@]} -eq 0 ]; then
+            echo "No packages provided for building."
+            exit 0
+          fi
+
+          # Sort packages in dependency order
+          PKGS=$(sudo -Eu builder ./xbps-src sort-dependencies "${RAW_PKGS[@]}")
+
+          # Remove old binary artifacts for packages being rebuilt
+          for pkg in $PKGS; do
+            sudo -Eu builder find hostdir/binpkgs -name "${pkg}-[0-9]*_*.xbps" -exec rm -fv {} + || true
+            sudo -Eu builder find hostdir/binpkgs -name "${pkg}-[0-9]*_*.sig2" -exec rm -fv {} + || true
+          done
+
+          # Configure xbps-src
+          mkdir -p etc
+          cat <<EOF > etc/conf
+          XBPS_BUILD_ENVIRONMENT=void-packages-ci
+          XBPS_ALLOW_RESTRICTED=yes
+          XBPS_CHROOT_CMD=uchroot
+          XBPS_REPOSITORY=$PWD/hostdir/binpkgs
+          XBPS_DISTDIR=$PWD/hostdir/distfiles
+          XBPS_MASTERDIR_PKGS="$PWD/hostdir/binpkgs"
+          EOF
+
+          # Bootstrap build chroot
+          sudo -Eu builder ./xbps-src -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" binary-bootstrap
+
+          # Build packages in sorted order
+          for pkg in $PKGS; do
+            echo "🔨 Building package: $pkg (${TARGET_ARCH})"
+            sudo -Eu builder ./xbps-src -f pkg -j"$(nproc)" -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" "$pkg"
+          done
+
+      - name: 🔏 Sign packages & generate repodata index
+        working-directory: void-packages/hostdir/binpkgs
+        env:
+          PRIV_KEY: ${{ secrets.XBPS_PRIVATE_KEY }}
+          TARGET_ARCH: ${{ matrix.target_arch }}
+          MAINTAINER: "${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>"
+        run: |
+          set -euo pipefail
+          rm -f "${TARGET_ARCH}-repodata"
+
+          shopt -s nullglob
+          xbps_files=(*.xbps)
+          if [ ${#xbps_files[@]} -eq 0 ]; then
+            echo "No .xbps packages found. Skipping repository indexing."
+            exit 0
+          fi
+
+          # Index binary packages
+          xbps-rindex -a "${xbps_files[@]}"
+
+          # Sign repository metadata and package binaries using secrets.XBPS_PRIVATE_KEY
+          if [ -n "${PRIV_KEY:-}" ]; then
+            printf '%s\n' "$PRIV_KEY" > private.pem
+            chmod 600 private.pem
+
+            xbps-rindex -s --signedby "$MAINTAINER" --privkey private.pem "$PWD"
+            xbps-rindex -S --privkey private.pem "${xbps_files[@]}"
+            xbps-rindex -c "$PWD"
+
+            rm -f private.pem
+          else
+            echo "⚠️ Warning: secrets.XBPS_PRIVATE_KEY is empty; packages were indexed without signatures."
+          fi
+
+      - name: 📤 Upload repository artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-${{ matrix.arch }}-${{ matrix.libc }}
+          path: void-packages/hostdir/binpkgs/
+          retention-days: 5
+
+  # ============================================================================
+  # JOB 3: Publish GitHub Release
+  # ============================================================================
+  publish-release:
+    name: 🚀 Publish Release (${{ matrix.arch }}-${{ matrix.libc }})
+    needs: [detect, build-and-sign]
+    if: needs.build-and-sign.result == 'success'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            libc: glibc
+    steps:
+      - name: ⬇️ Download repository artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: repository-${{ matrix.arch }}-${{ matrix.libc }}
+          path: ./release-assets
+
+      - name: 🚀 Publish to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARCH: ${{ matrix.arch }}
+          LIBC: ${{ matrix.libc }}
+          REPO_SLUG: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          TAG="${ARCH}-${LIBC}"
+          BUILD_TIME=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          RELEASE_TITLE="📦 Latest Release - ${ARCH}-${LIBC}"
+          RELEASE_NOTES="<sub>📦 Latest Release - ${ARCH}<br>${BUILD_TIME}</sub>"
+
+          # Recreate release tag cleanly to publish fresh repodata & signed packages
+          gh release delete "$TAG" --cleanup-tag --yes --repo "$REPO_SLUG" || true
+
+          gh release create "$TAG" \
+            --repo "$REPO_SLUG" \
+            --title "$RELEASE_TITLE" \
+            --notes "$RELEASE_NOTES" \
+            --latest
+
+          gh release upload "$TAG" ./release-assets/* --clobber --repo "$REPO_SLUG"

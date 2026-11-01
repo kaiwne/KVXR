@@ -1,0 +1,45 @@
+# Template file for 'vscode'
+
+# ------------------------------
+
+pkgname=vscode
+version=1.144.0
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+short_desc="Visual Studio Code - Code Editing. Redefined"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="custom:Microsoft-EULA"
+homepage="https://code.visualstudio.com/"
+changelog="https://code.visualstudio.com/updates"
+
+# ------------------------------
+
+depends="xdg-utils"
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+
+# ------------------------------
+
+distfiles="https://update.code.visualstudio.com/${version}/linux-deb-x64/stable>code_${version}_amd64.deb"
+checksum="b8fbff92d8d95908990eed0acf004c980f29003725469e794ddbd017ea511a20"
+
+# ------------------------------
+
+do_install() {
+	vcopy usr /
+
+	vmkdir usr/lib
+	mv ${DESTDIR}/usr/share/code ${DESTDIR}/usr/lib/code
+	mv ${DESTDIR}/usr/share/zsh/vendor-completions ${DESTDIR}/usr/share/zsh/site-functions
+
+	vsed -i -e "s|/usr/share/code|/usr/lib/code|g" \
+		${DESTDIR}/usr/share/applications/*.desktop \
+		${DESTDIR}/usr/lib/code/bin/code
+
+	vmkdir usr/bin
+	ln -sf /usr/lib/code/bin/code ${DESTDIR}/usr/bin/code
+
+	vlicense ${DESTDIR}/usr/lib/code/resources/app/LICENSE.rtf
+}

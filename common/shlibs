@@ -1,0 +1,4 @@
+# --*-- shell --*--
+# Custom shared library mappings (SONAME -> package-version_revision) for KVXR.
+# Entries here are appended to upstream void-packages/common/shlibs during builds.
+libscenefx-0.5.so scenefx-0.5_1
