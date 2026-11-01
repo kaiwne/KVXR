@@ -1,0 +1,42 @@
+# Template file for 'rustdesk'
+
+# ------------------------------
+
+pkgname=rustdesk
+version=1.5.0
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+short_desc="Open source virtual/remote desktop infrastructure for everyone"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="AGPL-3.0-only"
+homepage="https://rustdesk.com/"
+changelog="https://github.com/rustdesk/rustdesk/releases"
+
+# ------------------------------
+
+depends="curl xdotool libva gst-plugins-base1"
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+
+# ------------------------------
+
+distfiles="https://github.com/rustdesk/rustdesk/releases/download/${version}/rustdesk-${version}-x86_64.deb"
+checksum="4e2b9701d25a7ef373f3d09bda584a37d6902f97a6ab15f2e86d4a5783e2a0ec"
+
+# ------------------------------
+
+do_install() {
+	rm -rf usr/share/rustdesk/files/systemd
+
+	vcopy usr /
+
+	vmkdir usr/lib
+	mv ${DESTDIR}/usr/share/rustdesk ${DESTDIR}/usr/lib/rustdesk
+
+	vmkdir usr/bin
+	ln -sf /usr/lib/rustdesk/rustdesk ${DESTDIR}/usr/bin/rustdesk
+
+	vsv rustdesk
+}

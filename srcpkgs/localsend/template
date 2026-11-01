@@ -1,0 +1,40 @@
+# Template file for 'localsend'
+
+# ------------------------------
+
+pkgname=localsend
+version=1.18.2
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+short_desc="An open source cross-platform alternative to AirDrop"
+maintainer="Kaiwne <kaiwne@proton.me>"
+license="MIT"
+homepage="https://localsend.org/"
+changelog="https://github.com/localsend/localsend/releases"
+
+# ------------------------------
+
+depends="xdg-user-dirs"
+nostrip=yes
+nopie=yes
+noshlibprovides=yes
+
+# ------------------------------
+
+distfiles="https://github.com/localsend/localsend/releases/download/v${version}/LocalSend-${version}-linux-x86-64.deb"
+checksum="cc42a4f3eacdcb25ec31f0016b1272acb003145ab30484db8965450e20c72cd2"
+
+# ------------------------------
+
+do_install() {
+	rm -f opt/localsend_app/lib/libdartjni.so
+
+	vmkdir usr/lib
+	vcopy opt/localsend_app usr/lib/localsend
+	vcopy usr /
+
+	vmkdir usr/bin
+	ln -sf /usr/lib/localsend/localsend_app ${DESTDIR}/usr/bin/localsend_app
+	ln -sf /usr/lib/localsend/localsend_app ${DESTDIR}/usr/bin/localsend
+}

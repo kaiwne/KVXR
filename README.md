@@ -21,8 +21,10 @@ sudo xbps-install -S
 | [`fcitx5-lotus-settings`](srcpkgs/fcitx5-lotus/template) | Fcitx5 Lotus — Settings GUI | [LotusInputMethod/fcitx5-lotus](https://github.com/LotusInputMethod/fcitx5-lotus) | ✅ |
 | [`fcitx5-ngosen`](srcpkgs/fcitx5-ngosen/template) | Ngó Sen, a Vietnamese input method for fcitx5 | [ngosen/ngosen](https://github.com/ngosen/ngosen) | ✅ |
 | [`helium-browser`](srcpkgs/helium-browser/template) | Fast, private and secure web browser with ad blocker | [imputnet/helium-linux](https://github.com/imputnet/helium-linux) | ✅ |
+| [`localsend`](srcpkgs/localsend/template) | Open source cross-platform alternative to AirDrop | [localsend/localsend](https://github.com/localsend/localsend) | ✅ |
 | [`mangowc`](srcpkgs/mangowc/template) | Dwl-based Wayland compositor using scenefx | [mangowm/mango](https://github.com/mangowm/mango) | ✅ |
 | [`pineconemc`](srcpkgs/pineconemc/template) | Prism Launcher fork with Ely.by account support | [ElyPrismLauncher/Launcher](https://github.com/ElyPrismLauncher/Launcher) | ✅ |
+| [`rustdesk`](srcpkgs/rustdesk/template) | Open source virtual/remote desktop infrastructure | [rustdesk/rustdesk](https://github.com/rustdesk/rustdesk) | ✅ |
 | [`scenefx`](srcpkgs/scenefx/template) | Drop-in replacement for the wlroots scene API | [wlrfx/scenefx](https://github.com/wlrfx/scenefx) | ✅ |
 | [`scenefx-devel`](srcpkgs/scenefx/template) | Drop-in replacement for the wlroots scene API (devel) | [wlrfx/scenefx](https://github.com/wlrfx/scenefx) | ✅ |
 | [`ttf-apple-emoji`](srcpkgs/ttf-apple-emoji/template) | Apple Color Emoji typeface | [samuelngs/apple-emoji-ttf](https://github.com/samuelngs/apple-emoji-ttf) | ➖ |
