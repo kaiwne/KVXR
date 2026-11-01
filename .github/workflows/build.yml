@@ -186,8 +186,12 @@ jobs:
           sed -i 's@for var in $(awk .*;@for var in $(printenv | cut -d'"'"'='"'"' -f1);@' \
             void-packages/common/environment/setup/sourcepkg.sh
 
-          # Copy KVXR package templates cleanly into void-packages/srcpkgs/
-          cp -a kvxr/srcpkgs/. void-packages/srcpkgs/
+          # Replace upstream package directories cleanly so leftover upstream patches/files do not interfere
+          for pkg_path in kvxr/srcpkgs/*; do
+            pkg_name=$(basename "$pkg_path")
+            rm -rf "void-packages/srcpkgs/${pkg_name}"
+            cp -a "$pkg_path" "void-packages/srcpkgs/${pkg_name}"
+          done
 
           # Append custom shlibs mappings (if any) without overwriting upstream common/shlibs
           if [ -f kvxr/common/shlibs ]; then
@@ -220,12 +224,6 @@ jobs:
           # Sort packages in dependency order
           PKGS=$(sudo -Eu builder ./xbps-src sort-dependencies "${RAW_PKGS[@]}")
 
-          # Remove old binary artifacts for packages being rebuilt
-          for pkg in $PKGS; do
-            sudo -Eu builder find hostdir/binpkgs -name "${pkg}-[0-9]*_*.xbps" -exec rm -fv {} + || true
-            sudo -Eu builder find hostdir/binpkgs -name "${pkg}-[0-9]*_*.sig2" -exec rm -fv {} + || true
-          done
-
           # Configure xbps-src
           mkdir -p etc
           cat <<EOF > etc/conf
@@ -240,11 +238,43 @@ jobs:
           # Bootstrap build chroot
           sudo -Eu builder ./xbps-src -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" binary-bootstrap
 
-          # Build packages in sorted order
+          # Build packages in sorted order (isolating failures so one broken package never blocks others)
+          mkdir -p hostdir/binpkgs_backup
+          chown -R builder:builder hostdir/binpkgs_backup
+          BUILT_OK=()
+          BUILT_FAILED=()
+
           for pkg in $PKGS; do
             echo "🔨 Building package: $pkg (${TARGET_ARCH})"
-            sudo -Eu builder ./xbps-src -f pkg -j"$(nproc)" -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" "$pkg"
+
+            # Back up existing binary for this package before rebuilding
+            rm -rf hostdir/binpkgs_backup/*
+            find hostdir/binpkgs -maxdepth 1 -name "${pkg}-[0-9]*_*.xbps" -exec mv -f {} hostdir/binpkgs_backup/ \; || true
+            find hostdir/binpkgs -maxdepth 1 -name "${pkg}-[0-9]*_*.sig2" -exec rm -f {} + || true
+
+            if sudo -Eu builder ./xbps-src -f pkg -j"$(nproc)" -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" "$pkg"; then
+              echo "✅ Successfully built: $pkg"
+              BUILT_OK+=("$pkg")
+            else
+              echo "⚠️ Failed to build: $pkg — restoring previous binary (if any) and continuing..."
+              BUILT_FAILED+=("$pkg")
+              mv -f hostdir/binpkgs_backup/*.xbps hostdir/binpkgs/ 2>/dev/null || true
+              sudo -Eu builder ./xbps-src -m "masterdir-${TARGET_ARCH}" -A "${TARGET_ARCH}" clean "$pkg" || true
+            fi
           done
+          rm -rf hostdir/binpkgs_backup
+
+          echo "=========================================="
+          echo "✅ Built (${#BUILT_OK[@]}): ${BUILT_OK[*]:-none}"
+          echo "⚠️ Failed (${#BUILT_FAILED[@]}): ${BUILT_FAILED[*]:-none}"
+          echo "=========================================="
+          if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+            {
+              echo "### 📦 Build Summary (\`${TARGET_ARCH}\`)"
+              echo "- **Built (${#BUILT_OK[@]}):** ${BUILT_OK[*]:-none}"
+              echo "- **Failed (${#BUILT_FAILED[@]}):** ${BUILT_FAILED[*]:-none}"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: 🔏 Sign packages & generate repodata index
         working-directory: void-packages/hostdir/binpkgs
