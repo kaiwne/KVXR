@@ -19,9 +19,14 @@ on:
     paths:
       - 'srcpkgs/**'
       - 'common/**'
+      - '.github/workflows/build.yml'
 
 permissions:
   contents: write
+
+defaults:
+  run:
+    shell: bash
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -147,12 +152,14 @@ jobs:
 
     steps:
       - name: ⚙️ Prepare Void container environment
+        shell: sh
         run: |
           mkdir -p /etc/xbps.d && cp /usr/share/xbps.d/*-repository-*.conf /etc/xbps.d/
           env -u XBPS_TARGET_ARCH xbps-install -Syu -y xbps
           env -u XBPS_TARGET_ARCH xbps-install -yu
           env -u XBPS_TARGET_ARCH xbps-install -y sudo bash curl grep jq zip unzip git github-cli xtools coreutils openssl
           useradd -G xbuilder -M builder -s "$(command -v bash)" || true
+          git config --global --add safe.directory "*"
 
       - name: 📥 Checkout upstream void-packages
         uses: actions/checkout@v4
