@@ -15,6 +15,7 @@ sudo xbps-install -S
 
 | Package | Description | Upstream | Auto-Update |
 | :--- | :--- | :--- | :---: |
+| [`artcraft-launcher`](srcpkgs/artcraft-launcher/template) | Unified launcher to install, update, and open Craft App Suite apps | [storytold/craft-launcher](https://github.com/storytold/craft-launcher) | ✅ |
 | [`brave-origin`](srcpkgs/brave-origin/template) | Fast, private and secure web browser with ad blocker | [brave/brave-browser](https://github.com/brave/brave-browser) | ✅ |
 | [`cordial`](srcpkgs/cordial/template) | Runs Roblox's official Android build natively on Linux | [luohoa97/cordial](https://github.com/luohoa97/cordial) | ✅ |
 | [`fcitx5-lotus`](srcpkgs/fcitx5-lotus/template) | Fcitx5 Lotus — Vietnamese IME | [LotusInputMethod/fcitx5-lotus](https://github.com/LotusInputMethod/fcitx5-lotus) | ✅ |
