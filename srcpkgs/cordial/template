@@ -5,13 +5,13 @@
 _dynarmic_version=a46601580d5512d324104f985b5f0209dc980ddc
 _dynarmic_biscuit_version=06d2ba12ed5f8b7397f9be79b2beb200a83b6bb7
 _dynarmic_catch2_version=a1a991fee5f217b40035cb2f8ebc83864d66408d
-_dynarmic_fmt_version=09a606d17a2c5c2a7a295f873f67d626264d2181
+_dynarmic_fmt_version=4ed3535092a96ac9f56fab80df83416d51bcc78e
 _dynarmic_mcl_version=5fc4beaf331037649b10625736b41365defb4f50
 _dynarmic_oaknut_version=94c726ce0338b054eb8cb5ea91de8fe6c19f4392
 _dynarmic_robin_map_version=91362aab8f2c63ef90bf7c21fb2c3283ded5ae48
 _dynarmic_xbyak_version=df112862583c2d327c1d9782fd28f53aa675f11d
 _dynarmic_zycore_c_version=c1fa01cea7fd457dcec468104d477c8b0ca675f7
-_dynarmic_zydis_version=3bca602422216770f8de82267892d929bcf20fe5
+_dynarmic_zydis_version=b4ebc9a5a8ba3dc38c6097fa8e4438fe54726486
 
 _libjnivm_version=f24b98c198fcc5c59a68d1efadd3f5791eb01c2e
 
@@ -23,7 +23,7 @@ _mcpell_core_version=0235714fbf5593df145e8f991f82c5926c2df2df
 
 pkgname=cordial
 version=0.34.0
-revision=1
+revision=2
 short_desc="Runs Roblox's official Android build, run natively on Linux"
 maintainer="Kaiwne <kaiwne@proton.me>"
 license="GPL-3.0-or-later"
@@ -58,13 +58,13 @@ checksum="e3332a4bb3ac7289e4669eca312f92515f179aae69fbe7d988b83fd069c026d1
           73c7f7fbf573c542767a4146297e4954369485077ae3880395445af787de0915
           5f823ab7c6f9cc7afb1475bea89a0416d10c5d6520b4b08f3dce6721ad236f45
           199b3c2c7140f87a746fb8a193c7885bc7a953b5b89fe6c41cb061dafa061583
-          7cfac3eae9edeba0e42d81ca6e17d095e30657e5aee5f995c39c8aa2aaeef0d5
+          a2723eb483c24cb17f0cff40c76dc20880e0118f7f6abe38f0b1c3a83a8d2aa5
           36a2200e7940838112c9967388685a5178c2e9a110233193b914f54b2e2f51fd
           c404db82002f9a851a412b3d55ac9be8a42a2e319fd2fc8a73e63e6ef5d4f97b
           c313acf3eb2d45984f33a5230e6280e7a67114944317d46260baa428dbc5f810
           1a4a9bed8eef6ad16a74374c2314dff319ca65d0ed1b096e36bc0779370349e1
           a6560819d40c8d47202a7a453d5e149c2faac7d1dfdf16be0c2a90128a8b77df
-          9ff1bb3a62b9c90f6627e020e833ba6ecdbdc0e7a939a100b989a7ce530c1a5a
+          caa71f71938dd2201b400c4c9ed9d3d0e07294288e65c64735f14856004b18de
           9998e7c7261bc78c4da33951bec283125a2d2c524975e0a56adf288ef675f95a
           b793d36926a28f925af15fef1e8ea19bb02619080f0e9e9d0cd4acc8128bff62
           5d041cc651457ed5b781194c0a84fc9120d33500e6d29725b2e2701b2f5e6782
