@@ -16,7 +16,7 @@ changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/etc/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
 hostmakedepends="extra-cmake-modules gettext pkgconf"
-makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel libevdev-devel libnotify-devel"
+makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel libevdev-devel libnotify-devel libxcb-devel"
 depends="fcitx5 acl-progs"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
