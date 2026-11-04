@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=pineconemc
-version=11.1.1
+version=11.1.2
 revision=1
 short_desc="Prism Launcher fork with integrated support for Ely.by accounts"
 maintainer="Kaiwne <kaiwne@proton.me>"
@@ -22,7 +22,7 @@ depends="virtual?java-runtime qt6-svg qt6-imageformats qt6-plugin-tls-openssl"
 # ------------------------------
 
 distfiles="https://github.com/ElyPrismLauncher/Launcher/releases/download/${version}/PineconeMC-${version}.tar.gz"
-checksum="ef286101f6ecde639bc79d75306147915dd05773fceddf04876d25f295a973ce"
+checksum="37fc004c93656e89bc8df93fe6d49f1cf90f2b6ebbbae1ffabeb92c970aa7a56"
 
 # ------------------------------
 

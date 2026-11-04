@@ -11,7 +11,7 @@ _dynarmic_oaknut_version=94c726ce0338b054eb8cb5ea91de8fe6c19f4392
 _dynarmic_robin_map_version=91362aab8f2c63ef90bf7c21fb2c3283ded5ae48
 _dynarmic_xbyak_version=df112862583c2d327c1d9782fd28f53aa675f11d
 _dynarmic_zycore_c_version=c1fa01cea7fd457dcec468104d477c8b0ca675f7
-_dynarmic_zydis_version=47ce083a5ebbd723bdbdef7666fdd9eead3051e0
+_dynarmic_zydis_version=fcc63c635889d800c9a08ea72482fa3344327732
 
 _libjnivm_version=f24b98c198fcc5c59a68d1efadd3f5791eb01c2e
 
@@ -23,7 +23,7 @@ _mcpell_core_version=0235714fbf5593df145e8f991f82c5926c2df2df
 
 pkgname=cordial
 version=0.34.0
-revision=3
+revision=4
 short_desc="Runs Roblox's official Android build, run natively on Linux"
 maintainer="Kaiwne <kaiwne@proton.me>"
 license="GPL-3.0-or-later"
@@ -64,7 +64,7 @@ checksum="e3332a4bb3ac7289e4669eca312f92515f179aae69fbe7d988b83fd069c026d1
           c313acf3eb2d45984f33a5230e6280e7a67114944317d46260baa428dbc5f810
           1a4a9bed8eef6ad16a74374c2314dff319ca65d0ed1b096e36bc0779370349e1
           a6560819d40c8d47202a7a453d5e149c2faac7d1dfdf16be0c2a90128a8b77df
-          064cd735caab5ffc55175b70d23a22259bac7989fe920f53e3b5b50a21b6cb7b
+          64b8425f0ac8cff2c2d27e6b7f9387b705e72354a6a9d9c962514f12cf2f90bc
           9998e7c7261bc78c4da33951bec283125a2d2c524975e0a56adf288ef675f95a
           b793d36926a28f925af15fef1e8ea19bb02619080f0e9e9d0cd4acc8128bff62
           5d041cc651457ed5b781194c0a84fc9120d33500e6d29725b2e2701b2f5e6782
