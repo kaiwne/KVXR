@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=fcitx5-lotus
-version=6.0.5
+version=6.0.6
 revision=1
 short_desc="Fcitx5 Lotus - Vietnamese IME"
 maintainer="Kaiwne <kaiwne@proton.me>"
@@ -25,7 +25,7 @@ _uinput_proxy_descr="Lotus UInput Proxy User"
 # ------------------------------
 
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz"
-checksum="035c7f3c437d56034952c2756cf161034277c9731328bb76a6949592a62141cc"
+checksum="e558155aa3c814b8e9e73a25e761c8b138d8b3f38910d9508b42b5e76425852d"
 
 # ------------------------------
 

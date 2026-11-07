@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=artcraft-launcher
-version=0.14.1
+version=0.16.0
 revision=1
 archs="x86_64"
 short_desc="Unified launcher to install, update, and open Craft App Suite apps"
@@ -21,7 +21,7 @@ nopie=yes
 # ------------------------------
 
 distfiles="https://github.com/storytold/craft-launcher/releases/download/v${version}/artcraft-launcher-${version}-linux-x86_64.tar.gz"
-checksum="540536bd4bc520e20511f3e5445e2b2dc1ef79f70f37ebe1894b919e3219f825"
+checksum="f322ce7d9b6ea455c2f12d2df8f52d9913def4842ed0c2767b2ae270b16f8116"
 
 # ------------------------------
 
