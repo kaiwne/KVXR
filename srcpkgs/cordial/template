@@ -4,14 +4,14 @@
 
 _dynarmic_version=a46601580d5512d324104f985b5f0209dc980ddc
 _dynarmic_biscuit_version=06d2ba12ed5f8b7397f9be79b2beb200a83b6bb7
-_dynarmic_catch2_version=a1a991fee5f217b40035cb2f8ebc83864d66408d
+_dynarmic_catch2_version=5cf5dec9f5a119a08d3ee061d260ccc525093a75
 _dynarmic_fmt_version=4229eb5820af49bf797641168624c8a754a1a4eb
 _dynarmic_mcl_version=5fc4beaf331037649b10625736b41365defb4f50
 _dynarmic_oaknut_version=94c726ce0338b054eb8cb5ea91de8fe6c19f4392
 _dynarmic_robin_map_version=91362aab8f2c63ef90bf7c21fb2c3283ded5ae48
 _dynarmic_xbyak_version=df112862583c2d327c1d9782fd28f53aa675f11d
 _dynarmic_zycore_c_version=c1fa01cea7fd457dcec468104d477c8b0ca675f7
-_dynarmic_zydis_version=f55ea30bff9273805fa31de4f873dbd9d679dd86
+_dynarmic_zydis_version=4b31c345c9ada8c34d0a7a1d789c0f08f844d851
 
 _libjnivm_version=f24b98c198fcc5c59a68d1efadd3f5791eb01c2e
 
@@ -23,7 +23,7 @@ _mcpell_core_version=0235714fbf5593df145e8f991f82c5926c2df2df
 
 pkgname=cordial
 version=0.34.1
-revision=6
+revision=7
 short_desc="Runs Roblox's official Android build, run natively on Linux"
 maintainer="Kaiwne <kaiwne@proton.me>"
 license="GPL-3.0-or-later"
@@ -57,14 +57,14 @@ distfiles="https://github.com/luohoa97/cordial/archive/refs/tags/v${version}.tar
 checksum="0bbf3326454bd66a8657f2c77db4d58378cbff27d5c40ced87d84998bbc1691f
           73c7f7fbf573c542767a4146297e4954369485077ae3880395445af787de0915
           5f823ab7c6f9cc7afb1475bea89a0416d10c5d6520b4b08f3dce6721ad236f45
-          199b3c2c7140f87a746fb8a193c7885bc7a953b5b89fe6c41cb061dafa061583
+          2ffc05f396aa0079f768163fdabc2b5ab901c35b5c93a4d3bba4b7d343d91927
           658ac9bb38fc303a4737fd98232adc10ca91535fe3624fd0d5d48c9925aeb9d1
           36a2200e7940838112c9967388685a5178c2e9a110233193b914f54b2e2f51fd
           c404db82002f9a851a412b3d55ac9be8a42a2e319fd2fc8a73e63e6ef5d4f97b
           c313acf3eb2d45984f33a5230e6280e7a67114944317d46260baa428dbc5f810
           1a4a9bed8eef6ad16a74374c2314dff319ca65d0ed1b096e36bc0779370349e1
           a6560819d40c8d47202a7a453d5e149c2faac7d1dfdf16be0c2a90128a8b77df
-          9553b643852e059c84eb8ba5c2397c0ca2fcb6203c993cf81df19eeeeb30fc54
+          abe40c2176b2d6ae5236e1606cee4e9d1ed1069cb5da13ba5e4d76eb71b31591
           9998e7c7261bc78c4da33951bec283125a2d2c524975e0a56adf288ef675f95a
           b793d36926a28f925af15fef1e8ea19bb02619080f0e9e9d0cd4acc8128bff62
           5d041cc651457ed5b781194c0a84fc9120d33500e6d29725b2e2701b2f5e6782
