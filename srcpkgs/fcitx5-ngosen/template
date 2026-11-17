@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=fcitx5-ngosen
-version=1.11.2
+version=1.12.1
 revision=1
 short_desc="Ngó Sen, a Vietnamese input method for fcitx5"
 maintainer="Kaiwne <kaiwne@proton.me>"
@@ -22,7 +22,7 @@ depends="python3-QtPy python3-pyqt6-widgets python3-pyqt6-gui python3-pyqt6-dbus
 # ------------------------------
 
 distfiles="https://github.com/ngosen/ngosen/archive/refs/tags/ngosen-${version}-${revision}.tar.gz"
-checksum="6598b8616176185d5e707280e99e4750b1b546bfa8d481a6f21f5aab62dce30e"
+checksum="51703178cd79aa853d3bd5e6de6adb69f93f35b6bd02769f29c0c0737a5045cc"
 
 # ------------------------------
 
