@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=vscode
-version=1.147.0
+version=1.148.0
 revision=1
 archs="x86_64"
 create_wrksrc=yes
@@ -23,7 +23,7 @@ noshlibprovides=yes
 # ------------------------------
 
 distfiles="https://update.code.visualstudio.com/${version}/linux-deb-x64/stable>code_${version}_amd64.deb"
-checksum="749efcdf5008a8323d76773b836199cdecf708fdb993f0f0544d9475176837ab"
+checksum="da33c10565e17b83f93508a365222f31bba116ab5c9e7bef7f562783943fd513"
 
 # ------------------------------
 
