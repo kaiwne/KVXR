@@ -3,7 +3,7 @@
 # ------------------------------
 
 pkgname=mangowc
-version=0.19.3
+version=0.19.4
 revision=1
 conf_files="/etc/mango/config.conf"
 short_desc="Dwl-based wayland compositor using scenefx"
@@ -25,4 +25,4 @@ desc_option_xwayland="Enable Xwayland support"
 # ------------------------------
 
 distfiles="https://github.com/mangowm/mango/archive/refs/tags/${version}.tar.gz"
-checksum="32a49ea74b87da5e3adfb5b3d1983c7c0dfc6f4d097e9065f5cbe62042b07e3d"
+checksum="c4573ab52e76d38850d2b5e6982fcf16ee1f664cb327bd88a5b05f26676642fa"
